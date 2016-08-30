@@ -1,0 +1,116 @@
+#contentFrame {
+	text-align: center;
+}
+
+#column1, #column2, #column3 {
+	width: 33%;
+	float: left;
+	text-align: center;
+}
+
+#contentFrame button {
+	font: small Verdana, sans-serif;
+	width: 30%;
+	padding: 1%;
+	margin: 1%;
+}
+
+div.cave, div.powerwall {
+	border: 1px solid black;
+	margin-bottom: 18px;
+	padding-bottom: 6px;
+}
+div.cave h2, div.powerwall h2 {
+	font: bold medium Verdana, sans-serif;
+	margin: 0;
+	padding: 2px 0;
+	color: black;
+	background-color: #CCC;
+}
+div.cave h2 {
+	color: white;
+	background-color: #007236;
+}
+div.powerwall h2 {
+	color: white;
+	background-color: #F7941D;
+}
+
+#navPrevious, #navNext {
+	display: block;
+	font: medium Verdana, sans-serif;
+	padding: 6px;
+	color: black;
+	background-color: #CCC;
+	border-top: 1px solid black;
+	text-decoration: none;
+}
+
+#navPrevious {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	border-right: 1px solid black;
+}
+
+#navNext {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	border-left: 1px solid black;
+}
+
+#navPrevious:hover, #navNext:hover {
+	color: black;
+	background-color: white;
+}
+
+#activePrograms {
+	clear: both;
+	width: 98%;
+	border: 1px solid black;
+	border-top: none;
+	margin-bottom: 12px;
+	font: medium Verdana, sans-serif;
+}
+
+#activePrograms caption {
+	width: 98%;
+	padding: 3px 0;
+	color: white;
+	background-color: #666;
+	border: 1px solid black;
+	border-bottom: none;
+	font: bold large Verdana, sans-serif;
+}
+
+#stdoutFrame, #stderrFrame {
+	/* display: none; */
+	/* overflow: auto; */
+	clear: both;
+	width: 98%;
+	height: 150px;
+	margin-bottom: 12px;
+	font: small monospace;
+	border: 1px solid #666;
+	text-align: left;
+}
+
+#stdoutFrame h1, #stderrFrame h1 {
+	width: 100%;
+	padding: 3px 0;
+	color: white;
+	margin: 0;
+	background-color: #666;
+	font: bold large Verdana, sans-serif;
+	text-align: center;
+}
+
+#stdoutContent, #stderrContent {
+	display: block;
+	padding: 12px;
+}
+
+#stdoutFrame object, #stderrFrame object {
+	width: 100%;
+}

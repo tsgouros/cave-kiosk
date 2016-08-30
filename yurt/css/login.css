@@ -1,0 +1,76 @@
+td{
+	padding: 10px;
+}
+
+td.table-start, th.table-start{
+	padding: 0px;
+}
+span.custom{
+	visibility: hidden;
+}
+
+#intro{
+	font-size: 20px;
+	text-align: center;
+}
+#login-wrapper, #signout-wrapper{
+	padding-bottom: 20px;
+}
+
+#login-wrapper{
+	padding-left: 90%;
+}
+
+#signout-wrapper{
+	padding-left: 82%;
+}
+
+.btn-secondary{
+	background-color: white;
+	border-color: gray;
+	display: inline-block;
+}
+
+.big-font{
+	font-size: 26px;
+}
+
+.ui-loader-default{
+	visibility: hidden;
+}
+
+/* css for stderr slider */
+.jqm-content{  
+     width: 250px;  
+}
+
+#main-container{
+     background-color: white;
+     z-index: 9;
+     width: 485px;
+     position: absolute;
+     left: -450px;
+}
+
+#login-container, #login-slider{
+    height: 300px;
+    float: left;
+}
+
+#login-container{
+    width: 450px;
+    padding-right: 29px;
+    padding-left: 8px;
+    overflow: scroll;
+}
+
+#login-slider{
+    width: 35px;
+    background-color: gray;
+}
+
+#caption{
+    color: white;
+    transform: rotate(-90deg);
+    margin-top: 150px;
+}

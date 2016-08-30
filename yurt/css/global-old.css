@@ -1,0 +1,117 @@
+body {
+	margin: 5%;
+	color: black;
+	background-color: #EEE;
+}
+
+body.cave {
+	color: black;
+	background-color: #E3F2E1;
+}
+
+body.powerwall {
+	color: black;
+	background-color: #FDEAD2;
+}
+
+#tabBar a {
+	display: block;
+	height: 18px;
+	padding: 5px;
+	margin-right: 2px;
+	float: left;
+	color: black;
+	background-color: #CCC;
+	border: 1px solid black;
+	font: medium Verdana, sans-serif;
+	text-decoration: none;
+}
+
+#tabBar a:hover {
+	color: black;
+	background-color: white;
+}
+
+#tabBar a.tabSelected {
+	color: black;
+	background-color: white;
+	border-bottom: 1px solid white;
+	font-weight: bold;
+}
+
+#tabBar form {
+	margin: 0;
+	padding: 0;
+}
+
+#tabBar div {
+	height: 18px;
+	padding-right: 1%;
+	float: right;
+}
+
+#contentFrame, #errorFrame {
+	position: relative;
+	top: -1px;
+	clear: both;
+	width: 97%;
+	height: 90%;
+	padding: 12px;
+	border: 1px solid black;
+}
+
+#errorFrame {
+	color: white;
+	background-color: #C00;
+	font: bold medium Verdana, sans-serif;
+	z-index: 2;
+	padding: 0 12px;
+	text-align: center;
+}
+
+#errorFrame a {
+	color: black;
+	background-color: transparent;
+	text-decoration: none;
+}
+
+div.error {
+	width: 100%;
+	padding: 12px 0;
+}
+
+div.error span {
+	font-size: smaller;
+	color: black;
+	background-color: transparent;
+}
+
+div.error div {
+	display: none;
+}
+
+div.error:hover > div {
+	display: block;
+	position: absolute;
+	padding: 12px 0;
+	top: 35px;
+	left: -1px;
+	width: 100%;
+	color: black;
+	background-color: #FCC;
+	border: 1px solid black;
+	font-size: smaller;
+	font-weight: normal;
+}
+
+#contentFrame {
+	top: -2px;
+	min-height: 500px;
+	color: black;
+	background-color: white;
+}
+
+
+form, select, input {
+	font: medium Verdana, sans-serif;
+}

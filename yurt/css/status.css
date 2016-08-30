@@ -1,0 +1,64 @@
+#contentFrame {
+	text-align: center;
+}
+
+#contentFrame > div {
+	width: 48%;
+	margin-bottom: 12px;
+	margin-right: 12px;
+	padding: 0;
+	padding-bottom: 12px;
+	float: left;
+	font: medium Verdana, sans-serif;
+	color: black;
+	background-color: #CCC;
+	border: 1px solid #666;
+}
+
+#contentFrame > div.status {
+	width: 98%;
+	color: black;
+	background-color: white;
+	border: 1px solid #666;
+}
+
+#contentFrame > div.pass {
+	color: black;
+	background-color: #CFC;
+	border: 1px solid #390;
+}
+
+#contentFrame > div.fail {
+	color: black;
+	background-color: #FCC;
+	border: 1px solid #C00;
+}
+
+#contentFrame > div h1 {
+	width: 100%;
+	margin: 0;
+	margin-bottom: 12px;
+	padding: 3px 0;
+	font: bold large Verdana, sans-serif;
+	color: white;
+	background-color: #666;
+}
+
+#contentFrame > div.pass h1 {
+	color: white;
+	background-color: #390;
+}
+
+#contentFrame > div.fail h1 {
+	color: white;
+	background-color: #C00;
+}
+
+#contentFrame > div button {
+	padding: 6px;
+	margin: 0 2px;
+}
+
+button.action {
+	font-weight: bold;
+}

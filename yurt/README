@@ -1,0 +1,9 @@
+
+This directory contains the code for the kiosk software used to 
+run the Brown YURT.  This was originally written by John Huffman, and
+improved to add user accounts by Heather Sha, in 2016.
+
+The files are stored for convenience, not services.  Use the
+install.sh script to distribute them to their service locations. The
+install must be run on the host machine, since it will be stored in a
+machine-specific directory such as /var/www/html/...
