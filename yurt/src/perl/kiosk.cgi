@@ -1,3 +1,12 @@
+#
+# \original author John Huffman
+#
+# \adapted by Heather Sha in 2016
+# \for user credential verification and idle timer
+# 
+# /
+
+
 #!/usr/bin/perl
 
 use CGI;
@@ -181,6 +190,7 @@ Content-type: text/html
 <!-- js scripts for login and timer -->
 <script type="text/javascript" src="js/kiosk.js"></script>
 <script type="text/javascript" src="js/slider.js"></script>
+<script type="text/javascript" src="js/sha1.js"></script>
 <!-- boostrap IE -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -200,8 +210,12 @@ print"   }\n";
 
 print << "((END KIOSK KEYBOARD))";
 function keyboardStart(){
-        var obj = new ActiveXObject("WScript.shell");
-        obj.run(' "C:\\Program Files\\Common Files\\Microsoft Shared\\ink\\tabtip.exe" ');
+        var isIE = /*@cc_on!@*/false || !!document.documentMode;
+        var isEdge = !isIE && !!window.StyleMedia;
+        if (isIE || isEdge){
+          var obj = new ActiveXObject("WScript.shell");
+          obj.run(' "C:\\Program Files\\Common Files\\Microsoft Shared\\ink\\tabtip.exe" ');
+      }
 }
 ((END KIOSK KEYBOARD))
 
