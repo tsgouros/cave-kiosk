@@ -208,7 +208,7 @@ print"   function goLink(args) { \n";
 print"   window.location.href = args; \n";
 print"   }\n";
 
-# This first check if current web browser is IE of Edge.
+# This first checks if current web browser is IE or Edge.
 # If it is, KIOSK virtual keyboard will be initiated 
 # This block of codes also reset idle timer when user taps on the KIOSK screen
 ##################################################################################################
