@@ -1,10 +1,16 @@
+
+#!/usr/bin/perl
+
+#if 0
+#
 # this file is being called from kiosk.js for password resetting
 # it reads each line from psd.txt (@PSDFILEPATH)
 # if the username in the current line does not match with the username being passed from kiosk.js
 # it re-writes the original line to the psd.txt
 # if the username matches, it updates the password by writing the new username,password combination to psd.txt
+#endif
 
-#!/usr/bin/perl
+
 use CGI;
 use strict;
 use warnings;

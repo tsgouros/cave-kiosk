@@ -1,22 +1,26 @@
-#
-# \original author John Huffman
-#
-# \adapted by Heather Sha in 2016
-# \for user credential verification and idle timer
-# 
-# /
-
-
 #!/usr/bin/perl
+
+#if 0
+#
+### \original author John Huffman
+###
+### \adapted by Heather Sha in 2016
+### \for user credential verification and idle timer
+### 
+### /
+#endif
 
 use CGI;
 use IPC::Open3;
 use IO::Select;
+use lib qw(/var/www/html/kiosk/lib/installed/share/perl5);
+use JSON;
 
 $query = new CGI;
 
-$home = "KIOSKTARGETDIR";
+$home = "KIOSKTARGETDIR";;
 $program = "index.cgi";
+$psd_path = "/users/cavedemo/etc/psd.txt";
 
 $data_dir = "$home/apps";
 $max_icon_columns = 8;
@@ -146,16 +150,27 @@ if ( -e "$app_dir/categories" ) {
 #s/_/ /g for(@sorted_categories);
 s/_/ /g for(@app_names);
 
+
+# getting and storing all user names from the psd.txt file into an array
+# encode the perl array into json object so that can be used for populating the dropdown menu
+my @usernname_array = ();
+open (FILE, $psd_path) || die "the password file cannot be found";
+while ($line = <FILE>){
+  chomp $line;
+  ($username, $password) = split(",", $line);
+  push @username_array, $username;
+}
+
+my $json_str = encode_json(\@username_array);
+
 # Generate kill buttons
 # #########################################################################
 sub generate_button{
   my $command = $_[0];
-  print"      <td style=\"text-align: center;width: 72px; height: 72px;\"> None </td>\n";
+  print"      <td class=\"program\" style=\"text-align: center;width: 72px; height: 72px;\"> None </td>\n";
   print"      <td\><button onClick=\"$command;\">\n";    \
   print"      <img style=\"width: 54px; height: 54px;\" src=\"img/skull.png\"></button></td>\n";
   }
-
-
 
 # HEADER  Initial header for HTML page.  This always stays the same
 ################################################################################
@@ -166,7 +181,7 @@ Content-type: text/html
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
-<! -- <style type="text/css" >\@import url("apps/$current_tab/style.css");</style> --> 
+<style type="text/css" >\@import url("apps/$current_tab/style.css");</style>
 <head>
 <!-- render in IE edge -->
 <meta charset="utf-8">
@@ -203,15 +218,20 @@ Content-type: text/html
 ((END HTML HEADER))
 
 
+
+
 print"   <script type=\"text/javascript\"> \n";
 print"   function goLink(args) { \n";
 print"   window.location.href = args; \n";
 print"   }\n";
 
-# This first checks if current web browser is IE or Edge.
-# If it is, KIOSK virtual keyboard will be initiated 
-# This block of codes also reset idle timer when user taps on the KIOSK screen
-##################################################################################################
+
+print" jQuery(function() { PopulateDropdown($json_str);}); \n";
+print" jQuery(function() { checkDefault('$cur_user');}); \n";
+
+# This first checks if current web browser is IE or Edge - if it is, KIOSK virtual keyboard will be initiated
+# This block of codes also resets idle timer when user taps on the KIOSK screen
+# ##################################################################################################
 
 print << "((END KIOSK KEYBOARD))";
 function keyboardStart(){
@@ -241,7 +261,7 @@ print" </script>\n";
 # Login modal is captured in ((END LOGIN MODAL))
 # If the user has logged in ($cur_user is set), the ((END STDRR OUTPUT)) and the sign out button will be shown
 # otherwise, the sign in button will be shown            
-#######################################################################################################################
+# #######################################################################################################################
 
 print "<body style=\"font-family:Times New Roman\"><br><br>\n";
 
@@ -356,8 +376,9 @@ print << "((END tab table start))";
 
 
 # Generate closed tabs and currently open tab
-# set img/open_tab.png for opened tab background image and img/closed_tab.png for closed tab background image            
+# set img/open_tab.png for opened tab background image and img/closed_tab.png for closed tab background image          
 #######################################################################################################################
+
 foreach $f (@tab_names) {
   $tab_name = $f;
   $tab_name =~ s/_/ /g;
@@ -394,12 +415,12 @@ print "    </tr>\n  </tbody>\n</table>\n";
 
 ## RUNNING  Current running program
 ## ((END run table start)) generates a table to hold the kill button and the current running program image
-## two blocks of ((END run table start)) wrap around the ($running_program) loop for this to happen.
-## In the ($running_program) loop, the program first grabs the image for the current running program - if the program has a folder.png, or else use default.png
-## The program then check to see if the user is logged in and will generate the actual kill button based on the status
-## ex. if the user is logged in /if ($cur_user)/, the button will be given the function Onclick="javascript:golink(specified_address)"
-##     otherwise, the button will simply alert the user to log in.
-###########################################################################################################
+# two blocks of ((END run table start)) wrap around the ($running_program) loop for this to happen.
+# In the ($running_program) loop, the program first grabs the image for the current running program - if the program has a folder.png, or else use default.png
+# The program then check to see if the user is logged in and will generate the actual kill button based on the status
+# ex. if the user is logged in /if ($cur_user)/, the button will be given the function Onclick="javascript:golink(specified_address)"
+# otherwise, the button will simply alert the user to log in.
+#######################################################################
 
 print << "((END run table start))";
 <table
@@ -475,10 +496,10 @@ print << "((END run table start))";
 
 
 
-## ICONS  Table for icons
-## The program first checks to see if the user is logged in and generates the run button based on the status
-## ex. if the user is logged in /if ($cur_user)/, the button will be given the function Onclick="javascript:golink(specified_address)"
-##     otherwise, the button will simply alert the user to log in.
+## ICONS   Table for icons
+### The program first checks to see if the user is logged in and generates the run button based on the status
+# ex. if the user is logged in /if ($cur_user)/, the button will be given the function Onclick="javascript:golink(specified_address)"
+# otherwise, the button will simply alert the user to log in.
 ############################################################################
 
 if ($current_tab eq "Video Config") { # The video menu is special, for turning cave on/off
@@ -554,7 +575,6 @@ Wall Off</button></td>
 else {  # This prints the rest of the icons
 
 # These are icons not already in columns:
-########################################################
 
 print  "<table \n  style='text-align: center; margin-left: auto; margin-right: auto;'\n";
 print  " border='0' cellpadding='10' cellspacing='10'>\n  <tbody>\n    <tr>\n";
@@ -582,8 +602,6 @@ print "    </tr>\n  </tbody>\n</table>\n";
 $column = 0;
 
 # These are icons/apps that are found in the categories file.
-########################################################################
-
 foreach my $key ( @sorted_categories ) {
   $key_with_spaces = $key;
   $key_with_spaces =~ s/_/ /g;
