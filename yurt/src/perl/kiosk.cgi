@@ -15,12 +15,16 @@ use IPC::Open3;
 use IO::Select;
 use lib qw(/var/www/html/kiosk/lib/installed/share/perl5);
 use JSON;
+#use JSON::PP;
 
 $query = new CGI;
 
-$home = "KIOSKTARGETDIR";;
+$home = "KIOSKTARGETDIR";
 $program = "index.cgi";
+
+#need to update these with install.sh
 $psd_path = "/users/cavedemo/etc/psd.txt";
+my $ERRORDIR="~/error.txt";
 
 $data_dir = "$home/apps";
 $max_icon_columns = 8;
@@ -58,8 +62,8 @@ if ($run_program) {
      $pid = fork();
      if ($pid == 0) {
       system("apps/System/Kill_All_Cave_Procs/run > /dev/null 2>&1 ");
-system("ssh -t cave001 $home/apps/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr &");
-#system("ssh -t cave001 /users/cavedemo/yurt-kiosk/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr & ");
+#system("ssh -t cave001 $home/apps/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr &");
+system("ssh -t cave001 env ERRORDIR='$ERRORDIR' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr & ");
 	#exec("ssh -t cave001 /users/cavedemo/yurt-kiosk/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/tmp.stderr &");
       #exec("$home/apps/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/running.stderr &");
        exit(0); 
@@ -77,6 +81,7 @@ system("ssh -t cave001 $home/apps/$current_tab/$run_program/run> $home/log/runni
   }
   
   #Add to the log when the file was run
+  #check where to put the log
   open  (FILE, ">>$home/log/running.log");
   $datetime = localtime(time());
   print FILE "$cur_user  [$datetime]: $current_tab/$run_program\n";
@@ -162,7 +167,6 @@ while ($line = <FILE>){
 }
 
 my $json_str = encode_json(\@username_array);
-
 # Generate kill buttons
 # #########################################################################
 sub generate_button{
@@ -181,7 +185,7 @@ Content-type: text/html
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
-<style type="text/css" >\@import url("apps/$current_tab/style.css");</style>
+<!-- <style type="text/css" >\@import url("apps/$current_tab/style.css");</style> -->
 <head>
 <!-- render in IE edge -->
 <meta charset="utf-8">

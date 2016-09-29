@@ -5,7 +5,7 @@ var timeout;
 //sign out user if no repsonses is given in 10 secs 
 var idleTime = 1000 * 1800, timeoutTime = 10000;
 var curProgram, curTab;
-var stderr = "apps/error.txt";
+var stderr = "~/error.txt";
 
 //reading an external file and populate the dropdown list
 //also store user-password key-value pairs in a hashmap
@@ -40,9 +40,9 @@ function PopulateDropdown(data){
 function checkDefault(curUser){
 	if (curUser) {
 		$.ajax({
-	            url     : 'psd_default.cgi',
+	            url     : 'psd.cgi',
 	            method  : 'post',
-	            data    : "username=" + curUser  + "&password=default",
+	            data    : "username=" + curUser  + "&status=default",
 	            dataType:'json',
 	            success : function( response ) {
 	            if(response[0] == "yes"){
@@ -64,18 +64,19 @@ function checkDefault(curUser){
 
 function getSTDERR(){
 	setTimeout(function(){	
-	$.get(stderr, function(data){
-		console.log(data);
-		if (data != undefined){
-			//var stderrMsg  = document.createElement("p");
-			//var content = document.createTextNode(data.toString());
-			//stderrMsg.appendChild(content);
-			//document.getElementById("login-container").appendChild(stderrMsg);
-		 }
-	});
 	$.ajax({
 		url : 'del.cgi',
-		method : 'post'
+		method  : 'post',
+		dataType:'json',
+		success : function( response ) {
+            var stderrMsg  = document.createElement("p");
+			var content = document.createTextNode(response[0]);
+			stderrMsg.appendChild(content);
+			document.getElementById("login-container").appendChild(stderrMsg);
+          },
+            error: function (request, status, error) {
+                console.log("Cannot check stderr");
+            }
 	});
 }, 5000);
 }
@@ -104,9 +105,9 @@ function verifyPsw(curTab){
 	    	password = Sha1.hash(password.toString());
 		}
 	    	$.ajax({
-	            url     : 'psd_verify.cgi',
+	            url     : 'psd.cgi',
 	            method  : 'post',
-	            data    : "username=" + curUser + "&password=" + password,
+	            data    : "username=" + curUser + "&status=verify" + "&password=" + password,
 	            dataType:'json',
 	            success : function( response ) {
 	            	if(response[0] == "yes"){
@@ -181,9 +182,9 @@ function updatePsw(user){
 	var password = Sha1.hash(document.getElementById('password').value);
 	$.ajax({
 	    //cache: false,
-            url     : 'psd_reset.cgi',
+            url     : 'psd.cgi',
             method  : 'post',
-            data    : "username=" + user + "&password=" + password,
+            data    : "username=" + user + "&status=reset" + "&password=" + password,
             success : function( response ) {
                 alert("You have successfully reset your password")
             },
