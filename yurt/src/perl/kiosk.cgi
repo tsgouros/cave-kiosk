@@ -13,23 +13,19 @@
 use CGI;
 use IPC::Open3;
 use IO::Select;
-use lib qw(/var/www/html/kiosk/lib/installed/share/perl5);
-use JSON;
-#use JSON::PP;
 
 $query = new CGI;
 
 $home = "KIOSKTARGETDIR";
 $program = "index.cgi";
-
-#need to update these with install.sh
-$psd_path = "/users/cavedemo/etc/psd.txt";
-my $ERRORDIR="~/error.txt";
+#needs to pass as a variable from install.sh
+my $ERRORDIR="/users/cavedemo/yurt-kiosk-test/yurt-kiosk/error.log";
 
 $data_dir = "$home/apps";
 $max_icon_columns = 8;
 # get the user who is currently logged in
 my $cur_user = $query->param('user');
+my $datetime = localtime(time());
 
 # If a program was selected to run, it is passed as a "run" argument
 my $run_program = $query->param('run');
@@ -63,8 +59,9 @@ if ($run_program) {
      if ($pid == 0) {
       system("apps/System/Kill_All_Cave_Procs/run > /dev/null 2>&1 ");
 #system("ssh -t cave001 $home/apps/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr &");
-system("ssh -t cave001 env ERRORDIR='$ERRORDIR' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr & ");
-	#exec("ssh -t cave001 /users/cavedemo/yurt-kiosk/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/tmp.stderr &");
+#system("ssh -t cave001 env ERRORDIR='$ERRORDIR' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/$current_tab/$run_program/run2> $home/log/running.stdout 2> $home/log/running.stderr & ");
+system("ssh -t cave001 env ERRORDIR='$ERRORDIR' USER_NAME='$cur_user' RUN_PROGRAM='$run_program' CURRENT_TAB='$current_tab' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/run > $home/log/running.stdout 2> $home/log/running.stderr &"); 
+#exec("ssh -t cave001 /users/cavedemo/yurt-kiosk/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/tmp.stderr &");
       #exec("$home/apps/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/running.stderr &");
        exit(0); 
     }
@@ -81,9 +78,7 @@ system("ssh -t cave001 env ERRORDIR='$ERRORDIR' /users/cavedemo/yurt-kiosk-test/
   }
   
   #Add to the log when the file was run
-  #check where to put the log
   open  (FILE, ">>$home/log/running.log");
-  $datetime = localtime(time());
   print FILE "$cur_user  [$datetime]: $current_tab/$run_program\n";
   close(FILE);
  
@@ -156,17 +151,6 @@ if ( -e "$app_dir/categories" ) {
 s/_/ /g for(@app_names);
 
 
-# getting and storing all user names from the psd.txt file into an array
-# encode the perl array into json object so that can be used for populating the dropdown menu
-my @usernname_array = ();
-open (FILE, $psd_path) || die "the password file cannot be found";
-while ($line = <FILE>){
-  chomp $line;
-  ($username, $password) = split(",", $line);
-  push @username_array, $username;
-}
-
-my $json_str = encode_json(\@username_array);
 # Generate kill buttons
 # #########################################################################
 sub generate_button{
@@ -230,7 +214,6 @@ print"   window.location.href = args; \n";
 print"   }\n";
 
 
-print" jQuery(function() { PopulateDropdown($json_str);}); \n";
 print" jQuery(function() { checkDefault('$cur_user');}); \n";
 
 # This first checks if current web browser is IE or Edge - if it is, KIOSK virtual keyboard will be initiated

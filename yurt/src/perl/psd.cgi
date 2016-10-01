@@ -1,9 +1,12 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use CGI;
 use strict;
 use warnings;
-use lib qw(/var/www/html/kiosk/lib/installed/share/perl5);
+# the JSON module has not been installed in perl. 
+# This module is linked externally following the instruction on:
+# http://stackoverflow.com/questions/251705/how-can-i-use-a-new-perl-module-without-install-permissions
+use lib qw(/users/cavedemo/yurt-kiosk-test/lib/installed/share/perl5);
 use JSON;
 
 # read the CGI params
@@ -104,4 +107,15 @@ if ($status eq "verify"){
 
 	close $newline
 
+}elsif ($status eq "populate"){
+	open (FILE, "$filename") or die "the password file cannot be found";
+	while (my $line = <FILE>){
+  	chomp $line;
+  	($username, $password) = split(",", $line);
+  	push @rst, $username;
+	}	
+	
+	close ( FILE );
+	print $cgi->header('application/json');
+	print encode_json(\@rst);
 }

@@ -44,8 +44,8 @@ sed -e "s@KIOSKTARGETDIR@${KIOSKTARGETDIR}@g" ${KIOSKSOURCEDIR}/src/perl/kiosk.c
 chmod 775 ${KIOSKTARGETDIR}/index.cgi
 sed -e "s@PSDFILEPATH@${PSDFILEPATH}@g" ${KIOSKSOURCEDIR}/src/perl/psd.cgi >${KIOSKTARGETDIR}/psd.cgi
 chmod 775 ${KIOSKTARGETDIR}/psd.cgi
-cp -R ${KIOSKSOURCEDIR}/src/perl/del.cgi ${KIOSKTARGETDIR}/
-chmod 775 ${KIOSKTARGETDIR}/del.cgi
+cp -R ${KIOSKSOURCEDIR}/src/perl/stderr.cgi ${KIOSKTARGETDIR}/
+chmod 775 ${KIOSKTARGETDIR}/stderr.cgi
 
 # Make sure the apps link is set up.
 ln -s -f ${APPDIR} ${KIOSKTARGETDIR}/apps

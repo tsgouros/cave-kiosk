@@ -15,23 +15,34 @@ $(function() {
 	$("#resetPsw").click(function(){
         $("#resetContent").toggle();
     });
+	PopulateDropdown();
 	getSTDERR();
 });
 
 
 //populate dropdown menu
-function PopulateDropdown(data){
-   var DDL = $("#userNames");
-   DDL.append("<option value> </option>");
+function PopulateDropdown(){
+   	var DDL = $("#userNames");
+   	DDL.append("<option value> </option>");
+	$.ajax({
+		url : 'psd.cgi',
+		method: 'post',
+		data : "status=populate",
+		dataType: 'json',
+		success : function( response ) {
+			for (var i=0; i < response.length-1; i++) {
+        		var temp = response[i].split(",");
+        		pswMap[temp[0]] = temp[1];
+   			 }					
 
-   for (var i=0; i < data.length-1; i++) {
-	var temp = data[i].split(",");
-        pswMap[temp[0]] = temp[1];
-   }
-
-   Object.keys(pswMap).sort().forEach(function(key) {
-	DDL.append("<option value='" + key + "'>" + key  + "</option>");   
-   });
+   		Object.keys(pswMap).sort().forEach(function(key) {
+        	DDL.append("<option value='" + key + "'>" + key  + "</option>");
+   			});
+		},
+		error: function (request, status, error){
+			console.log(error);
+		}
+	});
   
 }
 
@@ -65,13 +76,16 @@ function checkDefault(curUser){
 function getSTDERR(){
 	setTimeout(function(){	
 	$.ajax({
-		url : 'del.cgi',
+		url : 'stderr.cgi',
 		method  : 'post',
 		dataType:'json',
 		success : function( response ) {
-            var stderrMsg  = document.createElement("p");
-			var content = document.createTextNode(response[0]);
-			stderrMsg.appendChild(content);
+            		var stderrMsg  = document.createElement("p");
+			var content = response[0].toString().split("\\n");
+			for (i = 0; i < content.length; i++){
+				stderrMsg.appendChild(document.createTextNode(content[i]));
+				stderrMsg.appendChild(document.createElement("br"));
+			}
 			document.getElementById("login-container").appendChild(stderrMsg);
           },
             error: function (request, status, error) {

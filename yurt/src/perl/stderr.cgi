@@ -5,7 +5,7 @@ use warnings;
 use lib qw(/var/www/html/kiosk/lib/installed/share/perl5);
 use JSON;
 
-my $filename = "/users/cavedemo/error.txt";
+my $filename = "/users/cavedemo/yurt-kiosk-test/yurt-kiosk/error.log";
 
 my $cgi = CGI->new;
 
