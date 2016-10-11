@@ -2,10 +2,10 @@
 use CGI;
 use strict;
 use warnings;
-use lib qw(/var/www/html/kiosk/lib/installed/share/perl5);
+use lib qw(/users/cavedemo/yurt-kiosk-test/lib/installed/share/perl5);
 use JSON;
 
-my $filename = "/users/cavedemo/yurt-kiosk-test/yurt-kiosk/error.log";
+my $filename = "ERRORPATH";
 
 my $cgi = CGI->new;
 
@@ -26,5 +26,4 @@ push @rst, $scalar;
 print $cgi->header('application/json');
 print encode_json(\@rst);
 
-#system("rm /users/cavedemo/scratch/tmp/error.txt");
 

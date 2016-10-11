@@ -19,9 +19,10 @@ $query = new CGI;
 $home = "KIOSKTARGETDIR";
 $program = "index.cgi";
 #needs to pass as a variable from install.sh
-my $ERRORDIR="/users/cavedemo/yurt-kiosk-test/yurt-kiosk/error.log";
+my $ERRORDIR="ERRORPATH";
 
 $data_dir = "$home/apps";
+
 $max_icon_columns = 8;
 # get the user who is currently logged in
 my $cur_user = $query->param('user');
@@ -30,6 +31,12 @@ my $datetime = localtime(time());
 # If a program was selected to run, it is passed as a "run" argument
 my $run_program = $query->param('run');
 $run_program =~ s/ /_/g;
+
+#escape bracket signs in dir name to be passed as env variables
+my $run_program_env = $query->param('run');
+$run_program_env =~ s/ /_/g;
+$run_program_env =~ s/\(/\\\(/g;
+$run_program_env =~ s/\)/\\\)/g;
 
 # Determine current tab selected, or set to Video config, the only
 # default tab
@@ -60,7 +67,7 @@ if ($run_program) {
       system("apps/System/Kill_All_Cave_Procs/run > /dev/null 2>&1 ");
 #system("ssh -t cave001 $home/apps/$current_tab/$run_program/run> $home/log/running.stdout 2> $home/log/running.stderr &");
 #system("ssh -t cave001 env ERRORDIR='$ERRORDIR' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/$current_tab/$run_program/run2> $home/log/running.stdout 2> $home/log/running.stderr & ");
-system("ssh -t cave001 env ERRORDIR='$ERRORDIR' USER_NAME='$cur_user' RUN_PROGRAM='$run_program' CURRENT_TAB='$current_tab' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/run > $home/log/running.stdout 2> $home/log/running.stderr &"); 
+system("ssh -t cave001 env ERRORDIR='$ERRORDIR' USER_NAME='$cur_user' RUN_PROGRAM='$run_program_env' CURRENT_TAB='$current_tab' /users/cavedemo/yurt-kiosk-test/yurt-kiosk/run > $home/log/running.stdout 2> $home/log/running.stderr &"); 
 #exec("ssh -t cave001 /users/cavedemo/yurt-kiosk/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/tmp.stderr &");
       #exec("$home/apps/$current_tab/$run_program/run > $home/log/running.stdout 2> $home/log/running.stderr &");
        exit(0); 
@@ -306,10 +313,14 @@ print << "((END LOGIN MODAL))";
 ###############################################################################
 if($cur_user){
 print << "((END LOGIN WIDGET))";
+	<div class="container-fluid">
 	<div id="intro">This is a testing version of the Kiosk that requires you to log in. To return to the original version, poke <a class="big-font" href="http://172.20.8.9/kiosk/kiosk.cgi"> here </a> </div>
-	<div id="signout-wrapper">
+	
+	<div class="row">
+	<div class="text-right" id="signout-wrapper">
 	<button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#reset-password">Reset Password</button>
-	<button type="button" class="btn btn-secondary btn-lg" onclick="signOut('$program', '$current_tab')"> Sign Out </button>	
+	<br><button type="button" class="btn btn-secondary btn-lg" onclick="signOut('$program', '$current_tab')"> Sign Out </button>	
+</div>
 </div>
 ((END LOGIN WIDGET))
 
@@ -327,9 +338,12 @@ print << "((END STDERR OUTPUT))"
 
 }else{
 print << "((END LOGIN WIDGET))";
+	<div class="container-fluid">
         <div id="intro">This is a testing version of the Kiosk that requires you to log in. To go back to the original version, poke <a class="big-font" href="http://172.20.8.9/kiosk/kiosk.cgi"> here </a> </div>
-<div id="login-wrapper">
+<div class="row">
+<div class="text-right" id="login-wrapper">
 	<button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#log-in">Log In</button>
+</div>
 </div>
 ((END LOGIN WIDGET))
 }
@@ -340,12 +354,11 @@ print << "((END LOGIN WIDGET))";
 ## TABS  Table for top level Tabs
 ############################################################################
 print << "((END tab table start))";
-<table
- style="width: 100%; text-align: left; margin-left: auto; margin-right: auto;"
- border="0" cellpadding="0" cellspacing="0">
-  <tbody>
-    <tr>
-      <td style="text-align: center; height: 60px;"
+<div class="row">
+<div class="table-responsive">
+	<table style="width: 100%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellpadding="0" cellspacing="0"><tbody><tr>
+<td style="text-align: center; height: 60px;"
  background="img/edge_tab.png">&nbsp;</td>
 ((END tab table start))
 
@@ -397,7 +410,8 @@ foreach $f (@tab_names) {
 
 print "      <td style=\"text-align: center; height: 60px;\"\n";
 print "        background=\"img/edge_tab.png\">&nbsp;</td>\n";
-print "    </tr>\n  </tbody>\n</table>\n";
+print "    	</tr>\n  </tbody>\n</table>\n";
+print "		</div></div>\n";
 
 
 ## RUNNING  Current running program
@@ -410,6 +424,8 @@ print "    </tr>\n  </tbody>\n</table>\n";
 #######################################################################
 
 print << "((END run table start))";
+<div class="row">
+<div class="table-responsive">
 <table
  style="text-align: left; margin-left: auto; margin-right: auto;"
  border="0" cellpadding="0" cellspacing="0">
@@ -426,7 +442,8 @@ print << "((END run table start))";
       <td class="table-start" style="text-align: center; width: 12px; height: 12px;"
  background="img/border/left.png"></td>
       <td>
-      <table
+      <div class="table-responsive">
+	<table
  style="width: 400px; height: 72px;text-align: left; margin-left: auto; margin-right: auto;"
  border="0" cellpadding="2" cellspacing="2">
         <tbody>
@@ -464,6 +481,7 @@ print << "((END run table start))";
           </tr>
         </tbody>
       </table>
+	</div>
       </td>
       <td class="table-start" style="text-align: center; width: 12px; height: 12px;"
  background="img/border/right.png"></td>
@@ -478,6 +496,7 @@ print << "((END run table start))";
     </tr>
   </tbody>
 </table>
+</div></div>
 ((END run table start))
 
 
@@ -491,13 +510,15 @@ print << "((END run table start))";
 
 if ($current_tab eq "Video Config") { # The video menu is special, for turning cave on/off
 print << "((END icons table start))";
+<div class="table-responsive">
 <table
  style="text-align: left; margin-left: auto; margin-right: auto;"
  border="0" cellpadding="10" cellspacing="10">
   <tbody>
     <tr>
       <td align="undefined" valign="undefined">
-      <table
+<div class="table-responsive">      
+<table
  style="text-align: left; margin-left: auto; margin-right: auto;"
  border="0" cellpadding="0" cellspacing="0">
         <tbody>
@@ -535,6 +556,7 @@ Wall Off</button></td>
                 </tr>
               </tbody>
             </table>
+</div>
             </td>
             <td
  style="text-align: center; width: 12px; height: 12px;"
@@ -557,12 +579,13 @@ Wall Off</button></td>
     </tr>
   </tbody>
 </table>
+</div>
 ((END icons table start))
 }
 else {  # This prints the rest of the icons
 
 # These are icons not already in columns:
-
+print "<div class='table-responsive'>\n";
 print  "<table \n  style='text-align: center; margin-left: auto; margin-right: auto;'\n";
 print  " border='0' cellpadding='10' cellspacing='10'>\n  <tbody>\n    <tr>\n";
 
@@ -585,7 +608,7 @@ foreach my $key ( sort keys %unsorted_apps ) {
     print "<br>$key</button></td>\n";
     $column++;
 }
-print "    </tr>\n  </tbody>\n</table>\n";
+print "    </tr>\n  </tbody>\n</table>\n</div>\n";
 $column = 0;
 
 # These are icons/apps that are found in the categories file.
@@ -594,6 +617,7 @@ foreach my $key ( @sorted_categories ) {
   $key_with_spaces =~ s/_/ /g;
   
   print "<div id='$key'>\n<center> <H3>$key_with_spaces</H3></center>\n";
+  print "<div class='table-responsive'>\n";
   print  "<table \n  style='text-align: center; margin-left: auto; margin-right: auto;'\n";
   print  " border='0' cellpadding='10' cellspacing='10'>\n  <tbody>\n    <tr>\n";
   foreach my $element ( @{$categories{$key}} ) {
@@ -613,7 +637,7 @@ foreach my $key ( @sorted_categories ) {
     $element =~ s/_/ /g;
     print "<br>$element</button></td>\n";
     $column++;  }
-  print "    </tr>\n  </tbody>\n</table>\n</div>\n\n";
+  print "    </tr>\n  </tbody>\n</table>\n</div>\n</div>\n\n";
   $column = 0;
 }
 }
@@ -621,6 +645,7 @@ foreach my $key ( @sorted_categories ) {
 #print Dumper(\%unsorted_apps);
 #print Dumper(\%categories);
 
+print "</div>\n";
 print "</body>\n";
 
 
