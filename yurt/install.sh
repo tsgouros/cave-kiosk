@@ -15,6 +15,7 @@
 WEBDIR=${1:-/var/www/html}
 APPDIR=${2:-/users/cavedemo/yurt-kiosk}
 PSDFILEPATH=${3:-/users/cavedemo/etc/psd.txt}
+ERRORPATH=${4:-/users/cavedemo/yurt-kiosk-test/yurt-kiosk/error.log}
 KIOSKSOURCEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 echo "from ${KIOSKSOURCEDIR}"
@@ -40,12 +41,12 @@ fi
 
 # Copy the Perl code to the target directory, editing along the way.  Also make
 # sure the permissions are correct.
-sed -e "s@KIOSKTARGETDIR@${KIOSKTARGETDIR}@g" ${KIOSKSOURCEDIR}/src/perl/kiosk.cgi >${KIOSKTARGETDIR}/index.cgi
+sed -e "s@KIOSKTARGETDIR@${KIOSKTARGETDIR}@g" -e "s@ERRORPATH@${ERRORPATH}@g" ${KIOSKSOURCEDIR}/src/perl/kiosk.cgi >${KIOSKTARGETDIR}/index.cgi
 chmod 775 ${KIOSKTARGETDIR}/index.cgi
 sed -e "s@PSDFILEPATH@${PSDFILEPATH}@g" ${KIOSKSOURCEDIR}/src/perl/psd.cgi >${KIOSKTARGETDIR}/psd.cgi
 chmod 775 ${KIOSKTARGETDIR}/psd.cgi
-cp -R ${KIOSKSOURCEDIR}/src/perl/del.cgi ${KIOSKTARGETDIR}/
-chmod 775 ${KIOSKTARGETDIR}/del.cgi
+sed -e "s@ERRORPATH@${ERRORPATH}@g" ${KIOSKSOURCEDIR}/src/perl/stderr.cgi >${KIOSKTARGETDIR}/stderr.cgi
+chmod 775 ${KIOSKTARGETDIR}/stderr.cgi
 
 # Make sure the apps link is set up.
 ln -s -f ${APPDIR} ${KIOSKTARGETDIR}/apps

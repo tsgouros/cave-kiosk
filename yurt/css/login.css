@@ -1,5 +1,5 @@
-td{
-	padding: 10px;
+td.program{
+   padding: 10px;
 }
 
 td.table-start, th.table-start{
@@ -18,11 +18,11 @@ span.custom{
 }
 
 #login-wrapper{
-	padding-left: 90%;
+	margin-right: 5%;
 }
 
 #signout-wrapper{
-	padding-left: 82%;
+	margin-right: 5%;
 }
 
 .btn-secondary{
@@ -74,3 +74,10 @@ span.custom{
     transform: rotate(-90deg);
     margin-top: 150px;
 }
+
+
+
+
+
+
+
